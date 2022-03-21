@@ -20,3 +20,7 @@ Serverless provides some great tips on how a workflow would look if this was set
 Also if this grew outside of just the PII endpoint, we could break the main serverless file up and house each `functions` section in the corresponding functions folder. 
 
 Each one of those directories would have a README explaining how the function works, the route it's associated with, and what arguments it required.
+
+## Local development
+
+Local development is limited, but not fully, there is a way to leverage docker to mock some things with serverless framework plugin. You can see it at work in this [example](https://github.com/serverless/examples/tree/v3/aws-node-rest-api-with-dynamodb-and-offline) provided by serverless.
