@@ -1,0 +1,17 @@
+{
+  "name": "cards-api-demo",
+  "description": "Proof of concept for using serverless to deploy an api for credit cards",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "sls deploy --verbose"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1096.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+  }
+}
