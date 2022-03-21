@@ -15,8 +15,7 @@ const getDbRecord = async(id) => {
 
   try {
     console.log(`Fetching ${id} from the table`)
-    const info = await dynamo.get(payload).promise();
-    return info
+    return await dynamo.get(payload).promise();
   } catch (e) {
     console.error(`Failed to get item ${id} from the table, Error: `, e)
     return e;
