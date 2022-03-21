@@ -3,6 +3,9 @@ app: demo-cards-api
 service: cards-api-demo
 frameworkVersion: '3'
 
+plugins:
+  - serverless-ssm-fetch
+
 provider:
   name: aws
   runtime: nodejs14.x
@@ -22,15 +25,27 @@ provider:
         - arn:aws:dynamodb:us-east-1:485585223748:table/demo.cards.api
     - Effect: Allow
       Action:
-        - ssm:Describe*
-        - ssm:Get*
-        - ssm:List*
+        - ssm:GetResourcePolicy
+        - ssm:GetSecretValue
+        - ssm:DescribeSecret
+        - ssm:ListSecretVersionIds
+        - ssm:GetParameters
+        - ssm:GetParameter
+        - ssm:GetParametersByPath
       Resource:
-        - arn:aws:ssm:us-east-1:485585223748:parameter/api_key
+        - arn:aws:ssm:us-east-1:485585223748:parameter/marvin_id
+        - arn:aws:ssm:us-east-1:485585223748:parameter/marvin_key
+        - arn:aws:ssm:us-east-1:485585223748:parameter/card_match_api_key
+    - Effect: Allow
+      Action:
+        - ssm:ListSecrets
+      Resource: "*"
 
 functions:
   setCardData:
     handler: src/handlers/setCardData/setCardData.handler
+    ssmToEnvironment:
+      - CARDMATCH_API_KEY
     events:
       - http:
           path: /widget
@@ -40,6 +55,9 @@ functions:
           logGroup: '/aws/lambda/setCardData'
   fetchCardData:
     handler: src/handlers/fetchCardData/fetchCardData.handler
+    ssmToEnvironment:
+      - null # we pass null in here to keep the ssm values from being set to the function env.
+             #The way the param plugin works is it passes all values to the function by default unless this array is defined.
     events:
       - http:
           path: /results
@@ -67,3 +85,11 @@ resources:
           AttributeName: expireIn
           Enabled: true
 
+
+custom:
+  serverlessSsmFetch:
+    # The two marvin vars are not encrypted on creation (most likely would never happen)
+    MARVIN_ID: /marvin_id
+    MARVIN_KEY: /marvin_key
+    # The cardmatch api key is encrypted, since we're not using KMS in the function, we decrypt it at runtime using ~true so we can use it in the function
+    CARDMATCH_API_KEY: /card_match_api_key~true

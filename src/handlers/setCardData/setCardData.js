@@ -91,6 +91,7 @@ const dynamo = new AWS.DynamoDB.DocumentClient();
     // hash that value
     const guid = v4()
     const id = hashString(guid)
+    const cardmatchApiKey = process.env.CARDMATCH_API_KEY
 
     try {
       // create the results variable for our return, that will call our function to get the info from the API
@@ -107,6 +108,7 @@ const dynamo = new AWS.DynamoDB.DocumentClient();
         "statusCode": 200,
         "body": JSON.stringify({
           "requestedPokemon": pokemon,
+          "mock_cm_api_key": cardmatchApiKey,
           "results": results
         }, null, 2),
       }
